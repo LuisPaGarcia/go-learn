@@ -10,7 +10,7 @@ func printNum(number int) {
 func Add(nums ...int) int{
   result := 0
   for _, num := range nums{
-    printNum(num)
+    // printNum(num)
     result += num
   }
 
