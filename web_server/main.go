@@ -12,16 +12,35 @@ type Todo struct {
 }
 
 type PageVariables struct {
-  PageTitle,PageTodos string
+  PageTitle string
+  PageTodos  []Todo
 }
 
-var todos = []Todo
+var todos = []Todo{}
 
 func main(){
   http.HandleFunc("/", getTodos)
-  http.HandleFunc("/todos", getTodos)
+  http.HandleFunc("/todos/", getTodos)
+  http.HandleFunc("/add-todo/", addTodo)
   fmt.Println("Server is running at :8080")
   log.Fatal(http.ListenAndServe(":8080", nil))
+
+}
+
+func addTodo(w http.ResponseWriter, r *http.Request) {
+  err := r.ParseForm()
+  if err != nil {
+    http.Error(w, err.Error(), http.StatusBadRequest)
+  }
+
+  todo := Todo{
+    Title: r.FormValue("title"), // name att from html input
+    Content: r.FormValue("content"),
+  }
+
+  todos = append(todos, todo)
+  log.Print(todos)
+  http.Redirect(w, r, "/", http.StatusSeeOther)
 
 }
 
